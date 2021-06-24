@@ -1,0 +1,28 @@
+{
+  "name": "simple-video-controls",
+  "version": "1.0.0",
+  "description": "A simple custom video player.",
+  "main": "dist/svControls.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "svControls();"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/illfre/simple-video-controls.git"
+  },
+  "keywords": [
+    "video",
+    "custom",
+    "player",
+    "controls"
+  ],
+  "author": "illfre",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/illfre/simple-video-controls/issues"
+  },
+  "homepage": "https://github.com/illfre/simple-video-controls#readme"
+}
