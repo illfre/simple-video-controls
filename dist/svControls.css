@@ -163,7 +163,8 @@ input[type=range].svcProgress {
     background: #fff;
     border: 2px solid #fefefe;
     cursor: pointer;
-    box-shadow: -1px 0 3px rgba(0, 0, 0, 0.2), calc(-100vw - 7px) 0 0 100vw dodgerblue;
+	-moz-appearance: none;
+    box-shadow: -1px 0 3px rgba(0, 0, 0, 0.2);
 }
 
 .svcControls .verticalSlider {
