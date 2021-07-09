@@ -34,7 +34,7 @@ svControls(
 
 Example options:
 
-```json
+```
 play: {
     icon: '<i class="icon..."></i>',
     show: true,
