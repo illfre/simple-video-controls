@@ -1,6 +1,6 @@
 {
   "name": "simple-video-controls",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A simple custom video player.",
   "main": "dist/svControls.js",
   "directories": {
