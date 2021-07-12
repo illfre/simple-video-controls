@@ -29,9 +29,8 @@ function svControls(videoElement, options = {}) {
             value: 0.5,
         },
         progress: {
-            icon: '',
             show: true,
-            color: '',
+            color: '#4d9dff',
             background: '',
         },
         fullscreen: {
@@ -45,7 +44,7 @@ function svControls(videoElement, options = {}) {
             color: '',
         },
         clickPlayPause: false,
-        backgroundColor: 'rgba(55, 55, 55, 0.5)',
+        backgroundColor: 'linear-gradient(0deg, #0000007a, transparent)',
         color: 'white',
         minWidth: 500,
         minHeight: 30,
@@ -163,13 +162,30 @@ function svControls(videoElement, options = {}) {
     volumeSlider.setAttribute('step', 0.1);
     volumeSlider.value = videoElement.muted ? 0 : videoElement.volume;
     volumeSlider.onchange = function(e) {
-        volume = event.target.value
+        volume = e.target.value
         videoElement.volume = volume;
         volumeDiv.setAttribute('data-state', 'unmute');
         videoElement.muted = false;
     };
 
+    let volumeSliderInterval = null;
+    volumeSlider.onmousedown = function(e) {
+        volumeSliderInterval = setInterval(() => {
+            updateVolumeSliderVisual(e);
+        }, 10);
+    };
+
+    document.addEventListener('mouseup', () => {
+        clearInterval(volumeSliderInterval);
+    });
+
+    let updateVolumeSliderVisual = function () {
+        let value = (volumeSlider.value - volumeSlider.min) / (volumeSlider.max - volumeSlider.min) * 100;
+        volumeSlider.style.background = 'linear-gradient(to right, ' + self.options.progress.color + ' 0%, ' + self.options.progress.color + ' ' + value + '%, rgba(240, 240, 240, 0.4) ' + value + '%, rgba(240, 240, 240, 0.4) 100%)';
+    };
+
     volumeDiv.prepend(volumeSlider);
+    updateVolumeSliderVisual();
 
     let zoom = 1;
 
@@ -181,12 +197,14 @@ function svControls(videoElement, options = {}) {
             return;
         }
 
-        zoom = 1;
+        zoom = '1';
         videoElement.style.transform = 'scale(' + zoom + ')';
         zoomSlider.value = zoom;
 
         videoElement.style.left = '0';
         videoElement.style.top = '0';
+
+        updateZoomSliderVisual();
     }
 
     const zoomSlider = document.createElement('input');
@@ -197,13 +215,29 @@ function svControls(videoElement, options = {}) {
     zoomSlider.setAttribute('step', 0.1);
     zoomSlider.value = zoom;
     zoomSlider.onchange = function(e) {
-        zoom = event.target.value
+        zoom = e.target.value
         videoElement.style.transform = 'scale(' + zoom + ')';
 
         if (zoom < 2) {
             videoElement.style.left = '0';
             videoElement.style.top = '0';
         }
+    };
+
+    let zoomSliderInterval = null;
+    zoomSlider.onmousedown = function(e) {
+        zoomSliderInterval = setInterval(() => {
+            updateZoomSliderVisual(e);
+        }, 10);
+    };
+
+    document.addEventListener('mouseup', () => {
+        clearInterval(zoomSliderInterval);
+    });
+
+    let updateZoomSliderVisual = function () {
+        let value = (zoomSlider.value - zoomSlider.min) / (zoomSlider.max - zoomSlider.min) * 100;
+        zoomSlider.style.background = 'linear-gradient(to right, ' + self.options.progress.color + ' 0%, ' + self.options.progress.color + ' ' + value + '%, rgba(240, 240, 240, 0.4) ' + value + '%, rgba(240, 240, 240, 0.4) 100%)';
     };
 
     zoomDiv.prepend(zoomSlider);
@@ -259,9 +293,49 @@ function svControls(videoElement, options = {}) {
 
     const progress = document.createElement('input');
     progress.setAttribute('type', 'range');
+    progress.setAttribute('step', 0.01);
     progress.classList.add('svcProgress');
+
     progress.onchange = function(e) {
         videoElement.currentTime = e.target.value;
+    };
+
+    let progressInterval = null;
+    let wasPlaying = true;
+    let isSeeking = false;
+    progress.onmousedown = function(e) {
+        isSeeking = true;
+        if (videoElement.paused || videoElement.ended) {
+            wasPlaying = false;
+        } else {
+            videoElement.pause();
+            handlePause();
+        }
+
+        progressInterval = setInterval(() => {
+            updateProgress(e);
+        }, 10);
+    };
+
+    document.addEventListener('mouseup', () => {
+        if (isSeeking && wasPlaying) {
+            videoElement.play();
+            handlePause();
+        }
+        isSeeking = false;
+        clearInterval(progressInterval);
+    });
+
+    let updateProgress = function(e) {
+        if (e) {
+            videoElement.currentTime = e.target.value;
+        }
+        updateProgressVisual();
+    };
+
+    let updateProgressVisual = function () {
+        let value = (progress.value - progress.min) / (progress.max - progress.min) * 100;
+        progress.style.background = 'linear-gradient(to right, ' + self.options.progress.color + ' 0%, ' + self.options.progress.color + ' ' + value + '%, rgba(240, 240, 240, 0.4) ' + value + '%, rgba(240, 240, 240, 0.4) 100%)';
     };
 
     videoElement.currentTime = 0;
@@ -274,6 +348,7 @@ function svControls(videoElement, options = {}) {
     videoElement.ontimeupdate = function() {
         if (!progress.getAttribute('max')) progress.setAttribute('max', videoElement.duration);
         progress.value = videoElement.currentTime;
+        updateProgressVisual();
     };
 
     progressDiv.append(progress);
