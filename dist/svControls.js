@@ -269,13 +269,6 @@ function svControls(videoElement, options = {}) {
 
     videoElement.onloadedmetadata = function() {
         progress.setAttribute('max', videoElement.duration);
-
-        if (videoElement.mozHasAudio ||
-            Boolean(videoElement.webkitAudioDecodedByteCount) ||
-            Boolean(videoElement.audioTracks && videoElement.audioTracks.length)
-        ) {
-            volumeDiv.classList.add('scvNoAudio');
-        }
     };
 
     videoElement.ontimeupdate = function() {
