@@ -24,9 +24,7 @@ If you would like to alter the default video player options, you can pass in opt
 svControls(
     'videoID',
     {
-        zoom: {
-            show: false
-        },
+        stop: false,
         showOnHover: false
     }
 );
@@ -58,6 +56,9 @@ volume: {
 },
 progress: {
     show: true,
+    color: '#4d9dff',
+    fontFamily: 'monospace',
+    fontSize: '16px',
 },
 fullscreen: {
     icon: '<i class="icon..."></i>',
@@ -68,8 +69,9 @@ zoom: {
     show: true,
 },
 clickPlayPause: false,
-backgroundColor: 'rgba(55, 55, 55, 0.5)',
+backgroundColor: 'linear-gradient(0deg, #0000007a, transparent)',
 color: 'white',
+accentColor: '#4d9dff',
 minWidth: 500,
 minHeight: 30,
 showOnHover: true,

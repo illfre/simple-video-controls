@@ -1,3 +1,7 @@
+:root {
+    --svcAccentColor: #4d9dff;
+}
+
 .svcContainer {
     overflow: hidden;
     height: 100%;
@@ -10,7 +14,12 @@
 
 .svcControls.svcControlsHidden {
     opacity: 0;
-    transition: opacity 0.1s 0.6s ease;
+    transition: opacity 0.1s 1.3s ease;
+}
+
+.svcControls.svcControlsHidden[data-state="paused"] {
+    opacity: 1;
+    transition: opacity 0.1s 0s ease;
 }
 
 .svcControls.svcControlsHidden:hover {
@@ -25,7 +34,7 @@
 
 .svcControls {
     position: absolute;
-    height: 50px;
+    height: 60px;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -70,39 +79,47 @@ input[type=range].svcProgress {
 .svcBtn {
     background: none;
     border: none;
+    border-radius: 3px;
     cursor: pointer;
     min-width: 20px;
     margin: 3px;
     text-align: center;
-    transition: opacity .2s ease;
+    transition: background-color .1s .5s ease-in-out;
+    padding: 3px;
 }
 
-.svcBtn:hover {
-    opacity: 0.8;
+button.svcBtn {
+    transition: background-color .1s 0s ease-in-out;
+}
+
+button.svcBtn:hover {
+    transition: background-color .1s ease-in-out;
+    background-color: var(--svcAccentColor);
+}
+
+div.svcBtn:hover {
+    transition: background-color .1s ease-in-out;
+    background-color: var(--svcAccentColor);
 }
 
 .svcBtn:active {
     opacity: 1;
 }
 
-.svcControls .verticalSlider[data-state="mute"] {
-    opacity: 0.6;
-}
-
 .svcBtn[data-state="pause"] {
-    display: none;
+    display: block;
 }
 
 .svcBtn[data-state="play"] {
-    display: block;
+    display: none;
 }
 
 .svcControls[data-state="paused"] .svcBtn[data-state="pause"] {
-    display: block;
+    display: none;
 }
 
 .svcControls[data-state="paused"] .svcBtn[data-state="play"] {
-    display: none;
+    display: block;
 }
 
 .svcControls input[type=range] {
@@ -212,7 +229,7 @@ input[type=range].svcProgress {
 .svcControls .verticalSlider:hover input[type=range] {
     transition: bottom 0.3s ease, opacity 0.1s 0.1s ease;
     opacity: 1;
-    bottom: 55px;
+    bottom: 75px;
 }
 
 .svcControls .verticalSlider input[type=range]:hover {
@@ -225,5 +242,12 @@ input[type=range].svcProgress {
 }
 
 svg.svcIcon {
-    width: 13px;
+    width: 18px;
+    height: 18px;
+    padding: 3px;
+}
+
+.svcProgressTime {
+    padding: 16px;
+    font-size: 16px;
 }
