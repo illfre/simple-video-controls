@@ -69,6 +69,7 @@ zoom: {
     show: true,
 },
 clickPlayPause: false,
+spacebarPlayPause: true,
 backgroundColor: 'linear-gradient(0deg, #0000007a, transparent)',
 color: 'white',
 accentColor: '#4d9dff',

@@ -125,9 +125,12 @@ function svControls(videoElement, options = {}) {
         progress.focus();
     };
 
-    videoElement.onclick = () => {
-        if (self.options.clickPlayPause) {
-            handlePause();
+    let videoClickTimer;
+    videoElement.onclick = (e) => {
+        if (self.options.clickPlayPause && zoom <= 1 && e.detail === 1) {
+            videoClickTimer = setTimeout(() => {
+                handlePause();
+            }, 200)
         }
     };
 
@@ -198,8 +201,15 @@ function svControls(videoElement, options = {}) {
         }, 10);
     };
 
-    document.addEventListener('mouseup', () => {
-        clearInterval(volumeSliderInterval);
+    document.addEventListener('mouseup', (e) => {
+        videoClickActive = false;
+        videoClickPostX = e.pageX;
+        videoClickPostY = e.pageY
+        try {
+            clearInterval(volumeSliderInterval);
+        } catch (err) {
+            
+        }
     });
 
     let updateVolumeSliderVisual = function () {
@@ -268,7 +278,8 @@ function svControls(videoElement, options = {}) {
 
     const fullscreenBtn = newBtn(self.options.fullscreen.icon, btnClass);
     fullscreenBtn.setAttribute('data-state', 'go-fullscreen');
-    fullscreenBtn.onclick = function() {
+
+    let fullScreenToggle = () => {
         if (!!(document.fullscreen || document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement || document.fullscreenElement)) {
             if (document.exitFullscreen) document.exitFullscreen();
             else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
@@ -283,6 +294,12 @@ function svControls(videoElement, options = {}) {
             videoContainer.setAttribute('data-fullscreen', true);
         }
     };
+
+    fullscreenBtn.onclick = fullScreenToggle;
+    videoElement.addEventListener('dblclick', () => {
+        clearTimeout(videoClickTimer);
+        fullScreenToggle();
+    });
 
     const btnArea1 = document.createElement('div');
 
@@ -407,12 +424,33 @@ function svControls(videoElement, options = {}) {
         return btn;
     }
 
+    let videoClickActive = false;
+    let videoClickPostX = null;
+    let videoClickPostY = null;
+
     let initX, initY, firstX, firstY;
     if (self.options.zoom.show !== false) {
         videoElement.addEventListener('mousedown', function(e) {
-            if (zoom == 1) {
+            if (zoom <= 1) {
                 return;
             }
+
+            if (self.options.clickPlayPause) {
+                setTimeout(() => {
+                    if (videoClickActive) {
+                        return;
+                    }
+                    if (videoClickPostX && Math.abs(initX+e.pageX-firstX - initX+videoClickPostX-firstX) > 20) {
+                        return;
+                    }
+                    if (videoClickPostY && Math.abs(initY+e.pageY-firstY - initY+videoClickPostY-firstY) > 20) {
+                        return;
+                    }
+                    handlePause();
+                }, 200);
+            }
+
+            videoClickActive = true;
 
             e.preventDefault();
             initX = this.offsetLeft;
